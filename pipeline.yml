@@ -5,22 +5,22 @@ steps:
       terraform init
       terraform plan
 
-  - label: "Terraform Apply"
-    command: |
-      cd terraform/
-      terraform apply -auto-approve
-      echo "Saving VM Public IP..."
-      terraform output -raw vm_public_ip > /tmp/vm_public_ip
-    depends_on: "Terraform Plan"
+#  - label: "Terraform Apply"
+#    command: |
+#      cd terraform/
+#      terraform apply -auto-approve
+#      echo "Saving VM Public IP..."
+#      terraform output -raw vm_public_ip > /tmp/vm_public_ip
+#    depends_on: "Terraform Plan"
 
-  - label: "Run Ansible Playbook"
-    command: |
-      cd ansible/
+#  - label: "Run Ansible Playbook"
+#    command: |
+#      cd ansible/
       
-      # Retrieve the VM Public IP
-      export VM_IP=$(cat /tmp/vm_public_ip)
-      echo "VM Public IP: $VM_IP"
+#      # Retrieve the VM Public IP
+#      export VM_IP=$(cat /tmp/vm_public_ip)
+#      echo "VM Public IP: $VM_IP"
       
-      # Run Ansible with password authentication
-      ansible-playbook -i "$VM_IP," install_azure_cli.yml -u tommy --ask-pass --extra-vars "ansible_password=$ANSIBLE_PASSWORD"
-    depends_on: "Terraform Apply"
+#      # Run Ansible with password authentication
+#      ansible-playbook -i "$VM_IP," install_azure_cli.yml -u tommy --ask-pass --extra-vars "ansible_password=$ANSIBLE_PASSWORD"
+#    depends_on: "Terraform Apply"
