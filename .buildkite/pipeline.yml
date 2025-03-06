@@ -1,4 +1,3 @@
 steps:
-  - label: ":construction_worker: Build"
-    command: echo "Build the rocket"
-    key: build
+  -⁠label: "Debug"
+    command: "env | sort"
