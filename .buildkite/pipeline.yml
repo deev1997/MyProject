@@ -1,0 +1,35 @@
+steps:
+  - label: "Terraform Init"
+    command: |
+      cd terraform/
+      terraform init
+
+  - label: "Terraform Plan"
+    command: |
+      cd terraform/
+      terraform plan
+    depends_on: "Terraform Init"
+
+  - label: "Terraform Apply"
+    command: |
+      cd terraform/
+      terraform apply -auto-approve
+    depends_on: "Terraform Plan"
+
+  - label: "Terraform Refresh"
+    command: |
+      cd terraform/
+      terraform refresh
+    depends_on: "Terraform Apply"
+
+  - label: "Generate Inventory"
+    command: |
+      cd terraform/
+      ./generate_inventory.sh
+    depends_on: "Terraform Refresh"
+
+  - label: "Run Ansible Playbook"
+    command: |
+      cd ansible/
+      ansible-playbook -i inventory.ini install_azure_cli.yml
+    depends_on: "Generate Inventory"

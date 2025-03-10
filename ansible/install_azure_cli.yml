@@ -1,0 +1,54 @@
+---
+- name: Install Azure CLI on a Linux VM
+  hosts: myhosts
+  become: yes
+  gather_facts: no
+  tasks:
+    - name: Add SSH key to VM
+      ansible.builtin.authorized_key:
+        user: tommy  # Adjust to the correct username if different
+        state: present
+        key: "{{ lookup('file', '/Users/tomas/.ssh/id_ed25519.pub') }}"
+
+    - name: Update package lists
+      apt:
+        update_cache: yes
+
+    - name: Install required dependencies
+      apt:
+        name:
+          - ca-certificates
+          - curl
+          - apt-transport-https
+          - lsb-release
+          - gnupg
+        state: present
+
+    - name: Add Microsoft GPG key
+      ansible.builtin.shell: |
+        curl -sL https://packages.microsoft.com/keys/microsoft.asc -o /tmp/microsoft.asc
+        gpg --dearmor -o /etc/apt/trusted.gpg.d/microsoft.gpg /tmp/microsoft.asc
+      become: yes
+
+    - name: Add Azure CLI repository
+      ansible.builtin.shell: |
+        echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/azure-cli.list
+      become: yes
+
+    - name: Update package lists (again)
+      apt:
+        update_cache: yes
+
+    - name: Install Azure CLI
+      apt:
+        name: azure-cli
+        state: present
+
+    - name: Verify installation
+      ansible.builtin.command: az --version
+      register: az_cli_output
+      changed_when: false
+
+    - name: Show Azure CLI version
+      debug:
+        msg: "{{ az_cli_output.stdout }}"
