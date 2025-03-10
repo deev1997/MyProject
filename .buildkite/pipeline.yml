@@ -4,20 +4,21 @@ steps:
     command: |
       cd terraform/
       terraform init
-
-  - label: "Terraform Plan"
-    key: "terraform-plan"
-    command: |
-      cd terraform/
       terraform plan
-    depends_on: "terraform-init"
+
+  # - label: "Terraform Plan"
+  #   key: "terraform-plan"
+  #   command: |
+  #     cd terraform/
+  #     terraform plan
+  #   depends_on: "terraform-init"
 
   - label: "Terraform Apply"
     key: "terraform-apply"
     command: |
       cd terraform/
       terraform apply -auto-approve
-    depends_on: "terraform-plan"
+    depends_on: "terraform-init"
 
   - label: "Terraform Refresh"
     key: "terraform-refresh"
