@@ -4,21 +4,22 @@ steps:
     command: |
       cd terraform/
       terraform init
-      terraform plan
+    artifact_paths:
+      - "terraform/.terraform/**/*"
 
-  # - label: "Terraform Plan"
-  #   key: "terraform-plan"
-  #   command: |
-  #     cd terraform/
-  #     terraform plan
-  #   depends_on: "terraform-init"
+  - label: "Terraform Plan"
+    key: "terraform-plan"
+    command: |
+      cd terraform/
+      terraform plan
+    depends_on: "terraform-init"
 
   - label: "Terraform Apply"
     key: "terraform-apply"
     command: |
       cd terraform/
       terraform apply -auto-approve
-    depends_on: "terraform-init"
+    depends_on: "terraform-plan"
 
   - label: "Terraform Refresh"
     key: "terraform-refresh"
