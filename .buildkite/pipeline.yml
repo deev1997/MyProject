@@ -11,6 +11,7 @@ steps:
     key: "terraform-plan"
     command: |
       cd terraform/
+      buildkite-agent artifact download "terraform/.terraform/**" .
       terraform plan
     depends_on: "terraform-init"
 
