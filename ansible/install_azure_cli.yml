@@ -2,15 +2,21 @@
 - name: Install Azure CLI on a Linux VM
   hosts: myhosts
   become: yes
-  gather_facts: no  
+  gather_facts: no
   tasks:
+    - name: Add SSH key to VM
+      ansible.builtin.authorized_key:
+        user: tommy  # Adjust to the correct username if different
+        state: present
+        key: "{{ lookup('file', '/Users/tomas/.ssh/id_ed25519.pub') }}"
+
     - name: Update package lists
       apt:
         update_cache: yes
 
     - name: Install required dependencies
       apt:
-        name: 
+        name:
           - ca-certificates
           - curl
           - apt-transport-https

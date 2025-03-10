@@ -1,25 +1,41 @@
 steps:
-  - label: "Terraform Plan"
-    key: terraform-plan
+  - label: "Terraform Init"
+    key: "terraform-init"
     command: |
       cd terraform/
       terraform init
+
+  - label: "Terraform Plan"
+    key: "terraform-plan"
+    command: |
+      cd terraform/
       terraform plan
+    depends_on: "terraform-init"
 
   - label: "Terraform Apply"
-    key: terraform-apply
+    key: "terraform-apply"
     command: |
       cd terraform/
-      terraform init
       terraform apply -auto-approve
-    depends_on: terraform-plan
+    depends_on: "terraform-plan"
+
+  - label: "Terraform Refresh"
+    key: "terraform-refresh"
+    command: |
+      cd terraform/
+      terraform refresh
+    depends_on: "terraform-apply"
+
+  - label: "Generate Inventory"
+    key: "generate-inventory"
+    command: |
+      cd terraform/
+      ./generate_inventory.sh
+    depends_on: "terraform-refresh"
 
   - label: "Run Ansible Playbook"
-    key: ansible-playbook
+    key: "run-ansible"
     command: |
       cd ansible/
-      export vm_public_ip=$(terraform -chdir=../terraform output -raw vm_public_ip)
-      echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
-      chmod 600 ~/.ssh/id_ed25519
       ansible-playbook -i inventory.ini install_azure_cli.yml
-    depends_on: terraform-apply
+    depends_on: "generate-inventory"
