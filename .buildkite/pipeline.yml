@@ -44,6 +44,8 @@ steps:
         echo "Terraform apply was not approved. Exiting."
         exit 1
       fi
+    env:
+      APPLY_CHANGES: "${BUILDKITE_PLUGIN_BLOCK_APPLY_CHANGES}"
     artifact_paths:
       - "terraform/terraform-init-artifacts.tar.gz"
 
