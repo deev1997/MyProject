@@ -1,43 +1,71 @@
 steps:
-  - label: "Terraform Init"
-    key: "terraform-init"
+  # Step 1: Initialize Terraform, run plan, and block for approval
+  - label: "Terraform Plan and Block"
+    key: "terraform-plan-and-block"
     command: |
-      echo "Current directory:"
-      pwd
-      echo "Contents of the directory:"
-      ls -la
       cd terraform/
-      echo "Contents of the terraform directory:"
-      ls -la
+      # Initialize Terraform
+      echo "Running terraform init..."
       terraform init -input=false -no-color
-      echo "Contents of the terraform directory after init:"
-      ls -la
 
-  - label: "Terraform Plan"
-    key: "terraform-plan"
-    command: |
-      cd terraform/
-      terraform plan
-    depends_on: "terraform-init"
+      # Run Terraform plan
+      echo "Running terraform plan..."
+      terraform plan -input=false -no-color -out=tfplan
 
+      # Save the .terraform directory and .terraform.lock.hcl file as artifacts
+      tar -czf terraform-init-artifacts.tar.gz .terraform .terraform.lock.hcl tfplan
+    artifact_paths:
+      - "terraform/terraform-init-artifacts.tar.gz"
+
+  # Block step to wait for manual approval
+  - block: "Approve Terraform Changes"
+    prompt: "Please review the Terraform plan above. Do you want to apply these changes?"
+    fields:
+      - select: "Apply Changes"
+        key: "apply_changes"
+        required: true
+        options:
+          - label: "Yes"
+            value: "yes"
+          - label: "No"
+            value: "no"
+    depends_on: "terraform-plan-and-block"
+
+  # Step 2: Apply Terraform changes (if approved)
   - label: "Terraform Apply"
     key: "terraform-apply"
     command: |
-      cd terraform/
-      terraform apply -auto-approve
-    depends_on: "terraform-plan"
+      if [[ "$BUILDKITE_PLUGIN_BLOCK_APPLY_CHANGES" == "yes" ]]; then
+        cd terraform/
+        # Restore the .terraform directory, .terraform.lock.hcl file, and tfplan
+        tar -xzf terraform-init-artifacts.tar.gz
+        echo "Running terraform apply..."
+        terraform apply -input=false -no-color tfplan
+      else
+        echo "Terraform apply was not approved. Exiting."
+        exit 1
+      fi
+    depends_on: "Approve Terraform Changes"
+    artifact_paths:
+      - "terraform/terraform-init-artifacts.tar.gz"
 
   - label: "Terraform Refresh"
     key: "terraform-refresh"
     command: |
       cd terraform/
-      terraform refresh
+      # Restore the .terraform directory and .terraform.lock.hcl file
+      tar -xzf terraform-init-artifacts.tar.gz
+      echo "Running terraform refresh..."
+      terraform refresh -input=false -no-color
     depends_on: "terraform-apply"
+    artifact_paths:
+      - "terraform/terraform-init-artifacts.tar.gz"
 
   - label: "Generate Inventory"
     key: "generate-inventory"
     command: |
       cd terraform/
+      echo "Generating inventory..."
       ./generate_inventory.sh
     depends_on: "terraform-refresh"
 
@@ -45,5 +73,6 @@ steps:
     key: "run-ansible"
     command: |
       cd ansible/
+      echo "Running Ansible playbook..."
       ansible-playbook -i inventory.ini install_azure_cli.yml
     depends_on: "generate-inventory"
