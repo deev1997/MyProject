@@ -5,6 +5,7 @@ steps:
       cd terraform/
       echo "Running terraform init..."
       terraform init -input=false -no-color
+      ls -la
     artifact_paths:
       - .terraform/**  # Upload .terraform directory
       - .terraform.lock.hcl  # Upload lock file
