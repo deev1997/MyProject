@@ -11,18 +11,11 @@ steps:
       echo "Running terraform plan..."
       terraform plan -input=false -no-color -out=tfplan
 
-      # Block for manual approval
-      echo "Please review the Terraform plan above. Do you want to apply these changes?"
-      read -p "Apply changes? (yes/no): " apply_changes
 
-      if [[ "$apply_changes" == "yes" ]]; then
-        # Apply Terraform changes
-        echo "Running terraform apply..."
-        terraform apply -input=false -no-color tfplan
-      else
-        echo "Terraform apply was not approved. Exiting."
-        exit 1
-      fi
+      # Apply Terraform changes
+      echo "Running terraform apply..."
+      terraform apply -input=false -no-color tfplan
+    
 
       # Refresh the Terraform state
       echo "Running terraform refresh..."
