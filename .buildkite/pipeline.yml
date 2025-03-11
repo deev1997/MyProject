@@ -17,8 +17,13 @@ steps:
     depends_on: "terraform-init"
     command: |
       cd terraform/
-      ls -la
+      echo "Downloading artifacts..."
+      buildkite-agent artifact download "tmp/**" .
       ls -la tmp
+      echo "Restoring .terraform and .terraform.lock.hcl..."
+      mv tmp/.terraform .
+      mv tmp/.terraform.lock.hcl .
+      ls -la
       echo "Running terraform plan..."
       terraform plan -input=false -no-color -out=tfplan
     artifact_paths:
