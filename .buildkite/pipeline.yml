@@ -16,8 +16,8 @@ steps:
     key: "terraform-plan"
     command: |
       cd terraform/
-      buildkite-agent artifact download "terraform/.terraform/**/*" .
-      buildkite-agent artifact download "terraform/.terraform.lock.hcl" .
+      buildkite-agent artifact download "terraform/.terraform/**/*" . --job "${BUILDKITE_JOB_ID}"
+      buildkite-agent artifact download "terraform/.terraform.lock.hcl" . --job "${BUILDKITE_JOB_ID}"
       terraform plan
     depends_on: "terraform-init"
     plugins:
