@@ -34,7 +34,7 @@ steps:
   - label: "Terraform Apply"
     key: "terraform-apply"
     command: |
-      if [[ "$APPLY_CHANGES" == "yes" ]]; then
+      if [[ "yes" == "yes" ]]; then
         cd terraform/
         # Restore the .terraform directory, .terraform.lock.hcl file, and tfplan
         tar -xzf terraform-init-artifacts.tar.gz
