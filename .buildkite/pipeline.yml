@@ -8,10 +8,9 @@ steps:
       ls -la
       mv .terraform tmp
       mv .terraform.lock.hcl tmp
+      ls -la tmp
     artifact_paths:
-      - "terraform/.terraform/**" # Upload .terraform directory
-      - "terraform/.terraform.lock.hcl"  # Upload lock file
-      - "tmp"
+      - "tmp/**"
 
   - label: "Terraform Plan"
     key: "terraform-plan"
