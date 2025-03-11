@@ -19,14 +19,10 @@ steps:
       cd terraform/
       ls -la
       ls -la tmp
-      cp tmp/.terraform .
-      cp tmp/.terraform.lock.hcl .
       echo "Running terraform plan..."
       terraform plan -input=false -no-color -out=tfplan
     artifact_paths:
-      - "terraform/.terraform/**" # Upload .terraform directory
-      - "terraform/.terraform.lock.hcl"  # Upload lock file
-      - "../tmp"
+      - "terraform/tmp/**"
 
   - label: "Terraform Apply"
     key: "terraform-apply"
