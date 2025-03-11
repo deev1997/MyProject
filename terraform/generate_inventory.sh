@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo "A iniciar script"
+pwd
+
 # Navigate to your Terraform directory and get the public IP address
 cd ~/createVM/terraform
 VM_IP=$(terraform output -raw vm_public_ip)
