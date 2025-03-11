@@ -6,16 +6,16 @@ steps:
       echo "Running terraform init..."
       terraform init -input=false -no-color
     artifact_paths:
-      - terraform/.terraform/**  # Upload .terraform directory
-      - terraform/.terraform.lock.hcl  # Upload lock file
+      - .terraform/**  # Upload .terraform directory
+      - .terraform.lock.hcl  # Upload lock file
 
   - label: "Terraform Plan"
     key: "terraform-plan"
     depends_on: "terraform-init"
     command: |
       cd terraform/
-      buildkite-agent artifact download "terraform/.terraform/**" .  # Download .terraform directory
-      buildkite-agent artifact download "terraform/.terraform.lock.hcl" .  # Download lock file
+      buildkite-agent artifact download ".terraform/**" .  # Download .terraform directory
+      buildkite-agent artifact download ".terraform.lock.hcl" .  # Download lock file
       
       echo "Running terraform plan..."
       terraform plan -input=false -no-color -out=tfplan
