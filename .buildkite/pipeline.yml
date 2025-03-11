@@ -34,7 +34,7 @@ steps:
   - label: "Terraform Apply"
     key: "terraform-apply"
     command: |
-      if [[ "$BUILDKITE_PLUGIN_BLOCK_APPLY_CHANGES" == "yes" ]]; then
+      if [[ "$APPLY_CHANGES" == "yes" ]]; then
         cd terraform/
         # Restore the .terraform directory, .terraform.lock.hcl file, and tfplan
         tar -xzf terraform-init-artifacts.tar.gz
