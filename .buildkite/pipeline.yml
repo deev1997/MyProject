@@ -10,7 +10,7 @@ steps:
       mv .terraform.lock.hcl tmp
       ls -la tmp
     artifact_paths:
-      - "tmp/**"
+      - "terraform/tmp/**"
 
   - label: "Terraform Plan"
     key: "terraform-plan"
