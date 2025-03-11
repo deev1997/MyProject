@@ -2,9 +2,16 @@ steps:
   - label: "Terraform Init"
     key: "terraform-init"
     command: |
-      cd terraform/
-      terraform init
+      echo "Current directory:"
       pwd
+      echo "Contents of the directory:"
+      ls -la
+      cd terraform/
+      echo "Contents of the terraform directory:"
+      ls -la
+      terraform init -input=false -no-color
+      echo "Contents of the terraform directory after init:"
+      ls -la
 
   - label: "Terraform Plan"
     key: "terraform-plan"
