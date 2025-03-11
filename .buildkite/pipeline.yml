@@ -18,7 +18,7 @@ steps:
       - "terraform/terraform-init-artifacts.tar.gz"
 
   # Block step to wait for manual approval
-  - block: "Approve Terraform Changes"
+  - block: "approve-terraform-changes"
     prompt: "Please review the Terraform plan above. Do you want to apply these changes?"
     fields:
       - select: "Apply Changes"
@@ -45,7 +45,7 @@ steps:
         echo "Terraform apply was not approved. Exiting."
         exit 1
       fi
-    depends_on: "Approve Terraform Changes"
+    depends_on: "approve-terraform-changes"
     artifact_paths:
       - "terraform/terraform-init-artifacts.tar.gz"
 
