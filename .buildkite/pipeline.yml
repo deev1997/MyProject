@@ -4,6 +4,7 @@ steps:
     command: |
       cd terraform/
       terraform init
+      pwd
 
   - label: "Terraform Plan"
     key: "terraform-plan"
