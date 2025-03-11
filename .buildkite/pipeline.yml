@@ -57,22 +57,4 @@ steps:
       tar -xzf terraform-init-artifacts.tar.gz
       echo "Running terraform refresh..."
       terraform refresh -input=false -no-color
-    depends_on: "terraform-apply"
-    artifact_paths:
-      - "terraform/terraform-init-artifacts.tar.gz"
-
-  - label: "Generate Inventory"
-    key: "generate-inventory"
-    command: |
-      cd terraform/
-      echo "Generating inventory..."
-      ./generate_inventory.sh
-    depends_on: "terraform-refresh"
-
-  - label: "Run Ansible Playbook"
-    key: "run-ansible"
-    command: |
-      cd ansible/
-      echo "Running Ansible playbook..."
-      ansible-playbook -i inventory.ini install_azure_cli.yml
-    depends_on: "generate-inventory"
+    depends_on: "terraform-
