@@ -6,20 +6,24 @@ steps:
       terraform init
     artifact_paths:
       - "terraform/.terraform/**/*"
+      - "terraform/.terraform.lock.hcl"
     plugins:
       - artifacts#v1.5.0:
           upload: "terraform/.terraform/**/*"
+          upload: "terraform/.terraform.lock.hcl"
 
   - label: "Terraform Plan"
     key: "terraform-plan"
     command: |
       cd terraform/
       buildkite-agent artifact download "terraform/.terraform/**/*" .
+      buildkite-agent artifact download "terraform/.terraform.lock.hcl" .
       terraform plan
     depends_on: "terraform-init"
     plugins:
       - artifacts#v1.5.0:
           download: "terraform/.terraform/**/*"
+          download: "terraform/.terraform.lock.hcl"
 
   - label: "Terraform Apply"
     key: "terraform-apply"
