@@ -6,20 +6,29 @@ steps:
       echo "Running terraform init..."
       terraform init -input=false -no-color
       ls -la
+      mkdir -p ../tmp
+      mv .terraform ../tmp
+      mv .terraform.lock.hcl ../tmp
     artifact_paths:
       - "terraform/.terraform/**" # Upload .terraform directory
       - "terraform/.terraform.lock.hcl"  # Upload lock file
+      - "../tmp"
 
   - label: "Terraform Plan"
     key: "terraform-plan"
     depends_on: "terraform-init"
     command: |
       cd terraform/
+      ls -la
+      ls -la ../tmp
+      cp ../tmp/.terraform .
+      cp ../tmp/.terraform.lock.hcl .
       echo "Running terraform plan..."
       terraform plan -input=false -no-color -out=tfplan
     artifact_paths:
       - "terraform/.terraform/**" # Upload .terraform directory
       - "terraform/.terraform.lock.hcl"  # Upload lock file
+      - "../tmp"
 
   - label: "Terraform Apply"
     key: "terraform-apply"
