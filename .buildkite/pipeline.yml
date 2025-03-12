@@ -10,7 +10,7 @@ steps:
   - label: "Terraform Plan"
     key: "terraform-plan"
     plugins:
-      - buildkite-checkout#v3.0.0:
+      - buildkite-checkout:
           clean: false
     depends_on: "terraform-init"
     command: |
