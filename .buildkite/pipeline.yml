@@ -18,7 +18,7 @@ steps:
     command: |
       cd terraform/
       echo "Downloading artifacts..."
-      buildkite-agent artifact download "tmp/**" .
+      buildkite-agent artifact download "terraform/tmp/**" .
       ls -la tmp
       echo "Restoring .terraform and .terraform.lock.hcl..."
       mv tmp/.terraform .
