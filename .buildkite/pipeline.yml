@@ -6,11 +6,12 @@ steps:
       echo "Running terraform init..."
       terraform init -input=false -no-color
       ls -la
-      mv .terraform/** tmp
+      mv .terraform tmp/
       mv .terraform.lock.hcl tmp
       ls -la tmp
     artifact_paths:
       - "terraform/tmp/**"
+      - "terraform/tmp/.terraform/**"
 
   - label: "Terraform Plan"
     key: "terraform-plan"
