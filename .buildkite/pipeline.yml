@@ -15,6 +15,8 @@ steps:
     command: |
       cd terraform/
       echo "Running terraform plan..."
+      buildkite-agent artifact download ".terraform/**/*" .
+      buildkite-agent artifact download ".terraform.lock.hcl" .
       terraform plan -input=false -no-color -out=tfplan
 
   - label: "Terraform Apply"
@@ -22,9 +24,8 @@ steps:
     depends_on: "terraform-plan"
     command: |
       cd terraform/
-      buildkite-agent artifact download "terraform/.terraform/**" .  # Download .terraform directory
-      buildkite-agent artifact download "terraform/.terraform.lock.hcl" .  # Download lock file
-      
+      buildkite-agent artifact download ".terraform/**/*" .
+      buildkite-agent artifact download ".terraform.lock.hcl" .
       echo "Running terraform apply..."
       terraform apply -input=false -no-color tfplan
 
@@ -34,6 +35,8 @@ steps:
     command: |
       cd terraform/
       echo "Running terraform refresh..."
+      buildkite-agent artifact download ".terraform/**/*" .
+      buildkite-agent artifact download ".terraform.lock.hcl" .
       terraform refresh -input=false -no-color
 
   - label: "Generate Inventory"
