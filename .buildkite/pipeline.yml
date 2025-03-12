@@ -17,6 +17,7 @@ steps:
       echo "Running terraform plan..."
       buildkite-agent artifact download ".terraform/**/*" .
       buildkite-agent artifact download ".terraform.lock.hcl" .
+      chmod +x .terraform/providers/**/*
       terraform plan -input=false -no-color -out=tfplan
 
   - label: "Terraform Apply"
