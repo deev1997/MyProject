@@ -6,7 +6,7 @@ steps:
       echo "Running terraform init..."
       terraform init -input=false -no-color
       ls -la
-      buildkite-agent artifact upload ".terraform/**"
+      buildkite-agent artifact upload ".terraform/**/*"
       buildkite-agent artifact upload ".terraform.lock.hcl"
 
   - label: "Terraform Plan"
