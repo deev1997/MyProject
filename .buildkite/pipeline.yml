@@ -9,7 +9,7 @@ steps:
       mv .terraform tmp/
       mv .terraform.lock.hcl tmp
       ls -la tmp/.terraform
-      buildkite-agent artifact upload "tmp/.terraform/**" 
+      buildkite-agent artifact upload "terraform/tmp/.terraform/**" 
     artifact_paths:
       - "terraform/tmp/**"
 
