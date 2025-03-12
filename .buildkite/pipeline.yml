@@ -9,9 +9,7 @@ steps:
 
   - label: "Terraform Plan"
     key: "terraform-plan"
-    plugins:
-      - buildkite-checkout:
-          clean: false
+    clean_checkout: false
     depends_on: "terraform-init"
     command: |
       cd terraform/
