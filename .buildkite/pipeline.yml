@@ -6,29 +6,17 @@ steps:
       echo "Running terraform init..."
       terraform init -input=false -no-color
       ls -la
-      mv .terraform tmp/
-      mv .terraform.lock.hcl tmp
-      ls -la tmp/.terraform
-      buildkite-agent artifact search "tmp/**" 
-    artifact_paths:
-      - "terraform/tmp/**"
 
   - label: "Terraform Plan"
     key: "terraform-plan"
+    plugins:
+      - checkout#v3.0.0:
+          clean: false
     depends_on: "terraform-init"
     command: |
       cd terraform/
-      echo "Downloading artifacts..."
-      buildkite-agent artifact download "terraform/tmp/**" .
-      ls -la tmp
-      echo "Restoring .terraform and .terraform.lock.hcl..."
-      mv tmp/.terraform .
-      mv tmp/.terraform.lock.hcl .
-      ls -la
       echo "Running terraform plan..."
       terraform plan -input=false -no-color -out=tfplan
-    artifact_paths:
-      - "terraform/tmp/**"
 
   - label: "Terraform Apply"
     key: "terraform-apply"
