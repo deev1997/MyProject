@@ -32,7 +32,7 @@ resource "azurerm_public_ip" "vm_public_ip" {
   name                = "vm-public-ip"
   location            = "westeurope"
   resource_group_name = "my-resource-group"
-  allocation_method   = "Dynamic" # Use "Static" for a static IP
+  allocation_method   = "Dynamic"
   sku                 = "Basic"
 
   depends_on = [ azurerm_resource_group.my-resource-group ]
@@ -56,7 +56,7 @@ resource "azurerm_network_security_group" "vm_nsg" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "22"
-    source_address_prefix      = "*" # Allow SSH from any IP (restrict this in production)
+    source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
 }
@@ -75,7 +75,6 @@ resource "azurerm_network_interface" "main" {
     public_ip_address_id          = azurerm_public_ip.vm_public_ip.id
   }
 
-  # Ensure the NIC is destroyed before the NSG and resource group
   depends_on = [
     azurerm_network_security_group.vm_nsg
   ]
@@ -86,7 +85,6 @@ resource "azurerm_network_interface_security_group_association" "vm_nic_nsg" {
   network_interface_id      = azurerm_network_interface.main.id
   network_security_group_id = azurerm_network_security_group.vm_nsg.id
 
-  # Ensure the association is destroyed before the NIC and NSG
   depends_on = [
     azurerm_network_interface.main,
     azurerm_network_security_group.vm_nsg,

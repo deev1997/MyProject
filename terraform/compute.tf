@@ -42,12 +42,11 @@ resource "azurerm_virtual_machine" "main" {
   os_profile_linux_config {
     disable_password_authentication = true
     ssh_keys {
-      path     = "/home/tommy/.ssh/authorized_keys"   # Path on the VM where the SSH key will be placed
-      key_data = file("~/.ssh/id_ed25519.pub")         # The SSH public key (use the correct path)
+      path     = "/home/tommy/.ssh/authorized_keys"
+      key_data = file("~/.ssh/id_ed25519.pub") 
     }
   }
 
-  # Ensure the VM is destroyed before the NIC and resource group
   depends_on = [
     azurerm_network_interface.main,
     azurerm_network_interface_security_group_association.vm_nic_nsg,

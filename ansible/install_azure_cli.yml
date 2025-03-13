@@ -6,7 +6,7 @@
   tasks:
     - name: Add SSH key to VM
       ansible.builtin.authorized_key:
-        user: tommy  # Adjust to the correct username if different
+        user: tommy
         state: present
         key: "{{ lookup('file', '/Users/tomas/.ssh/id_ed25519.pub') }}"
 
